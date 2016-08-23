@@ -428,6 +428,7 @@ static int pp_ad_linearize_bl(struct mdss_ad_info *ad, u32 bl, u32 *bl_out,
 static int pp_ad_calc_bl(struct msm_fb_data_type *mfd, int bl_in, int *bl_out,
 		bool *bl_out_notify);
 static int pp_ad_shutdown_cleanup(struct msm_fb_data_type *mfd);
+static struct msm_fb_data_type *mdss_get_mfd_from_index(int index);
 static int pp_num_to_side(struct mdss_mdp_ctl *ctl, u32 num);
 static inline bool pp_sts_is_enabled(u32 sts, int side);
 static inline void pp_sts_set_split_bits(u32 *sts, u32 bits);
@@ -2536,8 +2537,8 @@ static void pcc_combine(struct mdp_pcc_cfg_data *raw,
 
 	r_ops = raw ? raw->ops : MDP_PP_OPS_DISABLE;
 	u_ops = user ? user->ops : MDP_PP_OPS_DISABLE;
-	r_en = raw && !(raw->ops & MDP_PP_OPS_DISABLE);
-	u_en = user && !(user->ops & MDP_PP_OPS_DISABLE);
+	r_en = raw && (raw->ops & MDP_PP_OPS_ENABLE);
+	u_en = user && (user->ops & MDP_PP_OPS_ENABLE);
 
 	// user configuration may change often, but the raw configuration
 	// will correspond to calibration data which should only change if
